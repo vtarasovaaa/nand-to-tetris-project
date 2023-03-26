@@ -1,0 +1,139 @@
+class Game {
+    field Car car;
+    field int opponentCarsCount;
+    field Array opponentCars;
+    field int tracksCount;
+
+    field int speed;
+    field int score;
+
+    constructor Game new() {
+        var int blockSize;
+        let blockSize = 256 / 16;
+        let car = Car.new(3, 4, blockSize);
+        let opponentCarsCount = 3;
+        let opponentCars = Array.new(opponentCarsCount);
+        do FillOpponentCars(blockSize);
+        let tracksCount = 2;
+        let speed = 1;  // todo изменять скорость 
+        let score = 1;
+        return this;
+    }
+
+    method void FillOpponentCars(int blockSize) {
+        var int i;
+        let i = 0;
+        while (i < opponentCarsCount) {
+            let opponentCars[i] = OpponentCar.new(3, 4, blockSize);
+            let i = i + 1;
+        }
+
+        return;
+    }
+
+    method void run() {
+        var boolean exit;
+        var int key;
+
+        let exit = false;
+        do car.Draw();
+        do MoveOpponentCars();
+        while(~exit) {
+            do Screen.clearScreen();
+            let key = Keyboard.keyPressed();
+            if( key = 81 ) {
+                // q
+                let exit = true;
+            }
+            if( key = 130 ) {
+                // left arrow
+                do car.ChangeTrackLeft();
+            }
+            if( key = 132 ) {
+                // right arrow
+                do car.ChangeTrackRight(tracksCount);
+            }
+            if( key = 131 ) {
+                // up arrow
+                do SpeedUp();
+            }
+            if( key = 133 ) {
+                // down arrow
+                do SpeedDown();
+            }
+
+            if( CheckCollision() ) {
+                do DrawGameOver();
+                do Sys.halt();
+                return;
+            } 
+
+            do car.Draw();
+            do MoveOpponentCars();
+            
+            do ScoreUp();
+
+            do Sys.wait(300);
+        }
+
+        do DrawExit();
+        do Sys.halt();
+
+        return;
+    }
+
+    method void MoveOpponentCars() {
+        var int i;
+        var OpponentCar currentCar;
+        let i = 0;
+        while (i < opponentCarsCount) {
+            // надо менять машину, когда она вышла за поле
+            let currentCar = opponentCars[i];
+            do currentCar.Move();
+            do currentCar.Draw();
+            let i = i + 1;
+        }
+
+        return;
+    }
+
+    method boolean CheckCollision() {
+        var int i;
+        let i = 0;
+        while (i < opponentCarsCount) {
+            if (car.CheckCollision(opponentCars[i])) {
+                return true;
+            }
+            let i = i + 1;
+        }
+
+        return false;
+    }
+
+    method void ScoreUp() {
+        let score = score + 1;
+        // todo draw
+        return;
+    }
+
+    method void SpeedUp() {
+        return;
+    }
+
+    method void SpeedDown() {
+        return;
+    }
+
+    method void DrawGameOver() {
+        return;
+    }
+
+    method void DrawExit() {
+        return;
+    }
+
+    method void dispose() {
+		do Memory.deAlloc(this);
+		return;
+	}
+}

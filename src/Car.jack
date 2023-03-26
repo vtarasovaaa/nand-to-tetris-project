@@ -1,0 +1,52 @@
+class Car {
+    field int trackNumber;
+    field int x, y;
+    field int width, height;
+
+    field int blockSize;
+
+    constructor Car new(int _width, int _height, int _blockSize) {
+        let trackNumber = 0;
+        let blockSize = _blockSize;
+        let width = _width;
+        let height = _height;
+        let x = 2;
+        let y = 11;  // todo почему так? 
+        return this;
+    }
+
+    // меняет трек и координату x = x - width 
+    method void ChangeTrackLeft() {
+        if (trackNumber = 0) {
+            return;
+        }
+        let trackNumber = trackNumber - 1;
+        let x = x - width;
+        return;
+    }
+
+    // меняет трек и координату x = x + width 
+    method void ChangeTrackRight(int tracksCount) {
+        if (trackNumber = tracksCount - 1) {
+            return;
+        }
+        let trackNumber = trackNumber + 1;
+        let x = x + width;
+        return;
+    }
+
+    method boolean CheckCollision(OpponentCar opponentCar) {
+        return (opponentCar.GetMinY() < y) & (Math.abs(opponentCar.GetX() - x) < width);
+    }
+
+    method void Draw() {
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x * blockSize, y * blockSize, (x + width) * blockSize, (y + height) * blockSize);
+        return;
+    }
+
+    method void dispose() {  // todo освобождать 
+		do Memory.deAlloc(this);
+		return;
+	}
+}

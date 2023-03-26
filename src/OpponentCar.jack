@@ -1,0 +1,39 @@
+class OpponentCar {
+    field int x, y;
+
+    field int width, height;
+
+    field int blockSize;
+
+    constructor OpponentCar new(int _width, int _height, int _blockSize) {
+        let blockSize = _blockSize;
+        let width = _width;
+        let height = _height;
+        let x = 5;  // todo random 
+        let y = 0;
+        return this;
+    }
+
+    method int GetMinY() {
+        return y + height;
+    }
+    method int GetX() {
+        return x;
+    }
+
+    method void Move() {
+        let y = y + 1;
+        return;
+    }
+
+    method void Draw() {
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x * blockSize, y * blockSize, (x + width) * blockSize, (y + height) * blockSize);  // todo рисовать часть машины, когда она уходит за поле или не до конца пояивлась
+        return;
+    }
+
+    method void dispose() {
+		do Memory.deAlloc(this);
+		return;
+	}
+}
