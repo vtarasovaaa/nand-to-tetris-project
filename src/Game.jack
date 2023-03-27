@@ -3,31 +3,36 @@ class Game {
     field int opponentCarsCount;
     field Array opponentCars;
     field int tracksCount;
-
-    field int speed;
+    field int blockSize;
+    field int carWidth, carHeight;
+    field int gap;
+    field int delayTime;
+    field int delayTimeStep;
     field int score;
 
     constructor Game new() {
-        var int blockSize;
+        let carWidth = 2;
+        let carHeight = 3;
         let blockSize = 256 / 16;
-        let car = Car.new(3, 4, blockSize);
-        let opponentCarsCount = 3;
+        let gap = 4;
+        let car = Car.new(carWidth, carHeight, blockSize, gap);
+        let opponentCarsCount = 1;
         let opponentCars = Array.new(opponentCarsCount);
-        do FillOpponentCars(blockSize);
+        do FillOpponentCars();
         let tracksCount = 2;
-        let speed = 1;  // todo изменять скорость 
-        let score = 1;
+        let delayTime = 150;
+        let delayTimeStep = 25;
+        let score = 0;
         return this;
     }
 
-    method void FillOpponentCars(int blockSize) {
+    method void FillOpponentCars() {
         var int i;
         let i = 0;
         while (i < opponentCarsCount) {
-            let opponentCars[i] = OpponentCar.new(3, 4, blockSize);
+            let opponentCars[i] = OpponentCar.new(carWidth, carHeight, blockSize, gap);
             let i = i + 1;
         }
-
         return;
     }
 
@@ -40,6 +45,8 @@ class Game {
         do MoveOpponentCars();
         while(~exit) {
             do Screen.clearScreen();
+            do DrawBorders();
+            do PrintScore();
             let key = Keyboard.keyPressed();
             if( key = 81 ) {
                 // q
@@ -70,10 +77,8 @@ class Game {
 
             do car.Draw();
             do MoveOpponentCars();
-            
-            do ScoreUp();
 
-            do Sys.wait(300);
+            do Sys.wait(delayTime);
         }
 
         do DrawExit();
@@ -87,13 +92,28 @@ class Game {
         var OpponentCar currentCar;
         let i = 0;
         while (i < opponentCarsCount) {
-            // надо менять машину, когда она вышла за поле
             let currentCar = opponentCars[i];
-            do currentCar.Move();
+            if (~currentCar.TryMove()) {
+                do ScoreUp();
+                do currentCar.dispose();
+                let opponentCars[i] = OpponentCar.new(carWidth, carHeight, blockSize, gap);
+            }
             do currentCar.Draw();
             let i = i + 1;
         }
 
+        return;
+    }
+
+    method void DrawBorders() {
+        var int leftBorderX, rightBorderX;
+        do Screen.setColor(true);
+
+        let leftBorderX = 512 / 2 - (carWidth * blockSize * (tracksCount / 2)) - gap;
+        do Screen.drawLine(leftBorderX, 0, leftBorderX, 255);
+
+        let rightBorderX = 512 / 2 + (carWidth * blockSize * (tracksCount / 2));
+        do Screen.drawLine(rightBorderX, 0, rightBorderX, 255);
         return;
     }
 
@@ -106,21 +126,32 @@ class Game {
             }
             let i = i + 1;
         }
-
         return false;
     }
 
     method void ScoreUp() {
-        let score = score + 1;
-        // todo draw
+        let score = score + 1;        
+        return;
+    }
+
+    method void PrintScore() {
+        do Output.moveCursor(0, 0);
+        do Output.printString("Score: ");
+        do Output.printInt(score);
         return;
     }
 
     method void SpeedUp() {
+        if ((delayTime - delayTimeStep) > 25) {
+            let delayTime = delayTime - delayTimeStep;
+        }
         return;
     }
 
     method void SpeedDown() {
+        if ((delayTime + delayTimeStep) < 275) {
+            let delayTime = delayTime + delayTimeStep;
+        }
         return;
     }
 

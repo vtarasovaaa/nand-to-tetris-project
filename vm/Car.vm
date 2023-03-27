@@ -1,19 +1,27 @@
 function Car.new 0
-push constant 6
+push constant 7
 call Memory.alloc 1
 pop pointer 0
 push constant 0
 pop this 0
 push argument 2
-pop this 5
+pop this 6
 push argument 0
 pop this 3
 push argument 1
 pop this 4
+push constant 512
+push constant 16
+call Math.divide 2
 push constant 2
+call Math.divide 2
+push this 3
+sub
 pop this 1
-push constant 11
+push constant 12
 pop this 2
+push argument 3
+pop this 5
 push pointer 0
 return
 function Car.ChangeTrackLeft 0
@@ -43,9 +51,9 @@ push argument 0
 pop pointer 0
 push this 0
 push argument 1
-eq
 push constant 1
 sub
+eq
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
@@ -66,9 +74,20 @@ function Car.CheckCollision 0
 push argument 0
 pop pointer 0
 push argument 1
-call OpponentCar.GetMinY 1
+call OpponentCar.GetY 1
 push this 2
+sub
+call Math.abs 1
+push this 4
 lt
+push argument 1
+call OpponentCar.GetY 1
+push this 2
+sub
+call Math.abs 1
+push this 4
+eq
+or
 push argument 1
 call OpponentCar.GetX 1
 push this 1
@@ -86,21 +105,27 @@ not
 call Screen.setColor 1
 pop temp 0
 push this 1
-push this 5
+push this 6
 call Math.multiply 2
 push this 2
-push this 5
+push this 6
 call Math.multiply 2
 push this 1
 push this 3
 add
-push this 5
+push this 6
 call Math.multiply 2
+push this 6
+push this 5
+call Math.divide 2
+sub
 push this 2
 push this 4
 add
-push this 5
+push this 6
 call Math.multiply 2
+push constant 1
+sub
 call Screen.drawRectangle 4
 pop temp 0
 push constant 0

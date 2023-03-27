@@ -1,5 +1,5 @@
 function OpponentCar.new 0
-push constant 5
+push constant 6
 call Memory.alloc 1
 pop pointer 0
 push argument 2
@@ -8,13 +8,19 @@ push argument 0
 pop this 2
 push argument 1
 pop this 3
-push constant 5
+push constant 512
+push constant 16
+call Math.divide 2
+push constant 2
+call Math.divide 2
 pop this 0
 push constant 0
 pop this 1
+push argument 3
+pop this 5
 push pointer 0
 return
-function OpponentCar.GetMinY 0
+function OpponentCar.GetLowestY 0
 push argument 0
 pop pointer 0
 push this 1
@@ -26,18 +32,52 @@ push argument 0
 pop pointer 0
 push this 0
 return
-function OpponentCar.Move 0
+function OpponentCar.GetY 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function OpponentCar.TryMove 0
 push argument 0
 pop pointer 0
 push this 1
 push constant 1
 add
 pop this 1
+push this 1
+push constant 16
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
 push constant 0
 return
-function OpponentCar.Draw 0
+label IF_FALSE0
+push constant 0
+not
+return
+function OpponentCar.Draw 1
 push argument 0
 pop pointer 0
+push this 1
+push this 3
+add
+push this 4
+call Math.multiply 2
+push constant 255
+call Math.min 2
+pop local 0
+push this 1
+push this 4
+call Math.multiply 2
+push constant 255
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
 push constant 0
 not
 call Screen.setColor 1
@@ -53,11 +93,11 @@ push this 2
 add
 push this 4
 call Math.multiply 2
-push this 1
-push this 3
-add
 push this 4
-call Math.multiply 2
+push this 5
+call Math.divide 2
+sub
+push local 0
 call Screen.drawRectangle 4
 pop temp 0
 push constant 0
