@@ -1,0 +1,241 @@
+function Drawer.new 0
+push constant 4
+call Memory.alloc 1
+pop pointer 0
+push constant 256
+pop this 0
+push constant 512
+pop this 1
+push constant 16
+pop this 2
+push constant 4
+pop this 3
+push pointer 0
+return
+function Drawer.DrawCar 0
+push argument 0
+pop pointer 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push argument 1
+call Car.GetX 1
+push this 2
+call Math.multiply 2
+push argument 1
+call Car.GetY 1
+push this 2
+call Math.multiply 2
+push argument 1
+call Car.GetX 1
+push argument 1
+call Car.GetWidth 1
+add
+push this 2
+call Math.multiply 2
+push this 2
+push this 3
+call Math.divide 2
+sub
+push argument 1
+call Car.GetY 1
+push argument 1
+call Car.GetHeight 1
+add
+push this 2
+call Math.multiply 2
+push constant 1
+sub
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Drawer.DrawOpponentCar 2
+push argument 0
+pop pointer 0
+push argument 1
+call OpponentCar.GetY 1
+push argument 1
+call OpponentCar.GetHeight 1
+add
+push this 2
+call Math.multiply 2
+push this 0
+push constant 1
+sub
+call Math.min 2
+pop local 0
+push argument 1
+call OpponentCar.GetY 1
+push this 2
+call Math.multiply 2
+push constant 0
+call Math.max 2
+pop local 1
+push argument 1
+call OpponentCar.GetY 1
+push this 2
+call Math.multiply 2
+push this 0
+push constant 1
+sub
+gt
+push argument 1
+call OpponentCar.GetY 1
+push argument 1
+call OpponentCar.GetHeight 1
+call Math.multiply 2
+push this 2
+call Math.multiply 2
+push constant 0
+lt
+or
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push argument 1
+call OpponentCar.GetX 1
+push this 2
+call Math.multiply 2
+push local 1
+push argument 1
+call OpponentCar.GetX 1
+push argument 1
+call OpponentCar.GetWidth 1
+add
+push this 2
+call Math.multiply 2
+push this 2
+push this 3
+call Math.divide 2
+sub
+push local 0
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Drawer.DrawBorders 2
+push argument 0
+pop pointer 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push constant 512
+push constant 2
+call Math.divide 2
+push argument 1
+push this 2
+call Math.multiply 2
+push argument 2
+push constant 2
+call Math.divide 2
+call Math.multiply 2
+sub
+push this 3
+sub
+pop local 0
+push local 0
+push constant 0
+push local 0
+push constant 255
+call Screen.drawLine 4
+pop temp 0
+push constant 512
+push constant 2
+call Math.divide 2
+push argument 1
+push this 2
+call Math.multiply 2
+push argument 2
+push constant 2
+call Math.divide 2
+call Math.multiply 2
+add
+pop local 1
+push local 1
+push constant 0
+push local 1
+push constant 255
+call Screen.drawLine 4
+pop temp 0
+push constant 0
+return
+function Drawer.PrintScore 0
+push argument 0
+pop pointer 0
+push constant 0
+push constant 0
+call Output.moveCursor 2
+pop temp 0
+push constant 7
+call String.new 1
+push constant 83
+call String.appendChar 2
+push constant 99
+call String.appendChar 2
+push constant 111
+call String.appendChar 2
+push constant 114
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+push constant 58
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+push argument 1
+call Output.printInt 1
+pop temp 0
+push constant 0
+return
+function Drawer.PrintSpeed 0
+push argument 0
+pop pointer 0
+push constant 2
+push constant 0
+call Output.moveCursor 2
+pop temp 0
+push constant 7
+call String.new 1
+push constant 83
+call String.appendChar 2
+push constant 112
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+push constant 100
+call String.appendChar 2
+push constant 58
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+push argument 1
+call Output.printInt 1
+pop temp 0
+push constant 0
+return
+function Drawer.DrawGameOver 0
+push argument 0
+pop pointer 0
+push constant 0
+return
+function Drawer.DrawExit 0
+push argument 0
+pop pointer 0
+push constant 0
+return

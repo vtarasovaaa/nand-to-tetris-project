@@ -2,27 +2,30 @@ class Game {
     field Car car;
     field int opponentCarsCount;
     field Array opponentCars;
+
     field int tracksCount;
-    field int blockSize;
     field int carWidth, carHeight;
-    field int gap;
-    field int delayTime;
-    field int delayTimeStep;
+    field int delayTime, delayTimeStep;
+
     field int score;
 
+    field Drawer drawer;
+
     constructor Game new() {
+
         let carWidth = 2;
         let carHeight = 3;
-        let blockSize = 256 / 16;
-        let gap = 4;
-        let car = Car.new(carWidth, carHeight, blockSize, gap);
-        let opponentCarsCount = 1;
+        let car = Car.new(carWidth, carHeight, 14, 12);
+        let opponentCarsCount = 2;
         let opponentCars = Array.new(opponentCarsCount);
         do FillOpponentCars();
         let tracksCount = 2;
         let delayTime = 150;
         let delayTimeStep = 25;
         let score = 0;
+
+        let drawer = Drawer.new();
+
         return this;
     }
 
@@ -30,7 +33,7 @@ class Game {
         var int i;
         let i = 0;
         while (i < opponentCarsCount) {
-            let opponentCars[i] = OpponentCar.new(carWidth, carHeight, blockSize, gap);
+            let opponentCars[i] = OpponentCar.new(carWidth, carHeight, 16, -12 * i);
             let i = i + 1;
         }
         return;
@@ -41,47 +44,36 @@ class Game {
         var int key;
 
         let exit = false;
-        do car.Draw();
-        do MoveOpponentCars();
+        do Draw();
         while(~exit) {
-            do Screen.clearScreen();
-            do DrawBorders();
-            do PrintScore();
             let key = Keyboard.keyPressed();
-            if( key = 81 ) {
-                // q
+            if( key = 81 ) {  // q
                 let exit = true;
             }
-            if( key = 130 ) {
-                // left arrow
+            if( key = 130 ) {  // left arrow
                 do car.ChangeTrackLeft();
             }
-            if( key = 132 ) {
-                // right arrow
+            if( key = 132 ) {  // right arrow
                 do car.ChangeTrackRight(tracksCount);
             }
-            if( key = 131 ) {
-                // up arrow
+            if( key = 131 ) {  // up arrow
                 do SpeedUp();
             }
-            if( key = 133 ) {
-                // down arrow
+            if( key = 133 ) {  // down arrow
                 do SpeedDown();
             }
 
             if( CheckCollision() ) {
-                do DrawGameOver();
+                do drawer.DrawGameOver();
                 do Sys.halt();
                 return;
             } 
-
-            do car.Draw();
             do MoveOpponentCars();
-
+            do Draw();
             do Sys.wait(delayTime);
         }
 
-        do DrawExit();
+        do drawer.DrawExit();
         do Sys.halt();
 
         return;
@@ -96,24 +88,11 @@ class Game {
             if (~currentCar.TryMove()) {
                 do ScoreUp();
                 do currentCar.dispose();
-                let opponentCars[i] = OpponentCar.new(carWidth, carHeight, blockSize, gap);
+                let opponentCars[i] = OpponentCar.new(carWidth, carHeight, 16, -12);
             }
-            do currentCar.Draw();
             let i = i + 1;
         }
 
-        return;
-    }
-
-    method void DrawBorders() {
-        var int leftBorderX, rightBorderX;
-        do Screen.setColor(true);
-
-        let leftBorderX = 512 / 2 - (carWidth * blockSize * (tracksCount / 2)) - gap;
-        do Screen.drawLine(leftBorderX, 0, leftBorderX, 255);
-
-        let rightBorderX = 512 / 2 + (carWidth * blockSize * (tracksCount / 2));
-        do Screen.drawLine(rightBorderX, 0, rightBorderX, 255);
         return;
     }
 
@@ -134,13 +113,6 @@ class Game {
         return;
     }
 
-    method void PrintScore() {
-        do Output.moveCursor(0, 0);
-        do Output.printString("Score: ");
-        do Output.printInt(score);
-        return;
-    }
-
     method void SpeedUp() {
         if ((delayTime - delayTimeStep) > 25) {
             let delayTime = delayTime - delayTimeStep;
@@ -155,11 +127,21 @@ class Game {
         return;
     }
 
-    method void DrawGameOver() {
-        return;
-    }
+    method void Draw() {
+        var int i;
+        let i = 0;
 
-    method void DrawExit() {
+        do Screen.clearScreen();
+        do drawer.DrawBorders(carWidth, tracksCount);
+        do drawer.PrintScore(score);
+        do drawer.PrintSpeed(2500 / delayTime);
+        do drawer.DrawCar(car);
+
+        while (i < opponentCarsCount) {
+            do drawer.DrawOpponentCar(opponentCars[i]);
+            let i = i + 1;
+        }
+
         return;
     }
 

@@ -2,19 +2,30 @@ class Car {
     field int trackNumber;
     field int x, y;
     field int width, height;
-    field int gap;
 
-    field int blockSize;
-
-    constructor Car new(int _width, int _height, int _blockSize, int _gap) {
+    constructor Car new(int _width, int _height, int _x, int _y) {
         let trackNumber = 0;
-        let blockSize = _blockSize;
         let width = _width;
         let height = _height;
-        let x = (512 / 16) / 2 - width;
-        let y = 12;  // todo почему так?
-        let gap = _gap;
+        let x = _x;
+        let y = _y;
         return this;
+    }
+
+    method int GetX() {
+        return x;
+    }
+
+    method int GetY() {
+        return y;
+    }
+
+    method int GetWidth() {
+        return width;
+    }
+
+    method int GetHeight() {
+        return height;
     }
 
     // меняет трек и координату x = x - width 
@@ -39,12 +50,6 @@ class Car {
 
     method boolean CheckCollision(OpponentCar opponentCar) {
         return (((Math.abs(opponentCar.GetY() - y) < height) | (Math.abs(opponentCar.GetY() - y) = height)) & (Math.abs(opponentCar.GetX() - x) < width));
-    }
-
-    method void Draw() {
-        do Screen.setColor(true);
-        do Screen.drawRectangle(x * blockSize, y * blockSize, (x + width) * blockSize - (blockSize / gap), (y + height) * blockSize - 1);
-        return;
     }
 
     method void dispose() {  // todo освобождать 
