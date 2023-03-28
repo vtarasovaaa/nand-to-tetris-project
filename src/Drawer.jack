@@ -4,12 +4,24 @@ class Drawer {
     field int blockSize;
     field int gap;
 
+    field String scoreMessage;
+    field String speedMessage;
+    field String winMessage;
+    field String gameOverMessage;
+    field String yourScoreMessage;
+
     constructor Drawer new()
     {
         let ScreenHeight = 256;
         let ScreenWidth = 512;
         let blockSize = 16;
         let gap = 4;
+
+        let scoreMessage = "Score: ";
+        let speedMessage = "Speed: ";
+        let gameOverMessage = "Game over";
+        let yourScoreMessage = "Your score: ";
+
         return this;
     }
 
@@ -24,7 +36,7 @@ class Drawer {
         var int currentY;
         let currentHeight = Math.min((car.GetY() + car.GetHeight()) * blockSize, ScreenHeight - 1);
         let currentY = Math.max(car.GetY() * blockSize, 0);
-        if (((car.GetY() * blockSize) > (ScreenHeight - 1)) | (((car.GetY() * car.GetHeight()) * blockSize) < 0)) {
+        if (((car.GetY() * blockSize) > (ScreenHeight - 1)) | (((car.GetY() + car.GetHeight()) * blockSize) < 0)) {
             return;
         }
         do Screen.setColor(true);
@@ -32,38 +44,53 @@ class Drawer {
         return;
     }
 
-    method void DrawBorders(int carWidth, int tracksCount) {
+    method void DrawBorders(int trackWidth, int tracksCount) {
         var int leftBorderX, rightBorderX;
         do Screen.setColor(true);
 
-        let leftBorderX = 512 / 2 - (carWidth * blockSize * (tracksCount / 2)) - gap;
-        do Screen.drawLine(leftBorderX, 0, leftBorderX, 255);
+        let leftBorderX = ScreenWidth / 2 - (trackWidth * blockSize * (tracksCount / 2)) - gap;
+        do Screen.drawLine(leftBorderX, 0, leftBorderX, ScreenHeight - 1);
 
-        let rightBorderX = 512 / 2 + (carWidth * blockSize * (tracksCount / 2));
-        do Screen.drawLine(rightBorderX, 0, rightBorderX, 255);
+        let rightBorderX = ScreenWidth / 2 + (trackWidth * blockSize * (tracksCount / 2));
+        do Screen.drawLine(rightBorderX, 0, rightBorderX, ScreenHeight - 1);
         return;
     }
 
     method void PrintScore(int score) {
         do Output.moveCursor(0, 0);
-        do Output.printString("Score: ");
+        do Output.printString(scoreMessage);
         do Output.printInt(score);
         return;
     }
 
     method void PrintSpeed(int speed) {
         do Output.moveCursor(2, 0);
-        do Output.printString("Speed: ");
+        do Output.printString(speedMessage);
         do Output.printInt(speed);
         return;
     }
 
-    method void DrawGameOver() {
+    method void DrawGameOver(int score) {
+        do Screen.clearScreen();
+        do Output.moveCursor(12, 26);
+        do Output.printString(gameOverMessage); 
+        do Output.moveCursor(14, 26);
+        do Output.printString(yourScoreMessage);
+        do Output.printInt(score); 
         return;
     }
 
     method void DrawExit() {
+        do Screen.clearScreen();
         return;
     }
-
+    
+    method void dispose() {
+        do scoreMessage.dispose();
+        do speedMessage.dispose();
+        do gameOverMessage.dispose();
+        do yourScoreMessage.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
 }

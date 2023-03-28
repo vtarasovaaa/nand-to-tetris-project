@@ -1,9 +1,27 @@
 class Main {
     function void main() {
+        var int key;
+        var boolean exit;
+        var boolean restart;
         var Game game;
-        let game = Game.new();
-        do game.run();
-	    do game.dispose();
+        let exit = false;
+        let restart = true;
+        while(~exit) {
+            if (restart) {
+                let restart = false;
+                let game = Game.new();
+                do game.run();
+	            do game.dispose();
+            }
+
+            let key = Keyboard.keyPressed();
+            if( key = 81 ) {  // q
+                let exit = true;
+            }
+            if ((~(key = 0)) & ((key < 130) | (key > 133))) {
+                let restart = true;
+            }
+        }
         return;
     }
 }

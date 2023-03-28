@@ -1,13 +1,13 @@
 function Game.new 0
-push constant 10
+push constant 11
 call Memory.alloc 1
 pop pointer 0
 push constant 2
-pop this 4
-push constant 3
 pop this 5
-push this 4
+push constant 3
+pop this 6
 push this 5
+push this 6
 push constant 14
 push constant 12
 call Car.new 4
@@ -22,14 +22,17 @@ call Game.FillOpponentCars 1
 pop temp 0
 push constant 2
 pop this 3
-push constant 150
-pop this 6
-push constant 25
-pop this 7
 push constant 0
+not
+pop this 4
+push constant 150
+pop this 7
+push constant 25
 pop this 8
-call Drawer.new 0
+push constant 0
 pop this 9
+call Drawer.new 0
+pop this 10
 push pointer 0
 return
 function Game.FillOpponentCars 1
@@ -43,14 +46,22 @@ push this 1
 lt
 not
 if-goto WHILE_END0
+push this 4
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
 push local 0
 push this 2
 add
-push this 4
 push this 5
-push constant 16
-push constant 12
-neg
+push this 6
+push constant 32
+push constant 2
+call Math.divide 2
+push this 5
+sub
+push pointer 0
+call Game.getSpawnY 1
 push local 0
 call Math.multiply 2
 call OpponentCar.new 4
@@ -58,10 +69,33 @@ pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
+goto IF_END0
+label IF_FALSE0
+push local 0
+push this 2
+add
+push this 5
+push this 6
+push constant 32
+push constant 2
+call Math.divide 2
+push pointer 0
+call Game.getSpawnY 1
+push local 0
+call Math.multiply 2
+call OpponentCar.new 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+label IF_END0
 push local 0
 push constant 1
 add
 pop local 0
+push this 4
+not
+pop this 4
 goto WHILE_EXP0
 label WHILE_END0
 push constant 0
@@ -137,10 +171,9 @@ call Game.CheckCollision 1
 if-goto IF_TRUE5
 goto IF_FALSE5
 label IF_TRUE5
+push this 10
 push this 9
-call Drawer.DrawGameOver 1
-pop temp 0
-call Sys.halt 0
+call Drawer.DrawGameOver 2
 pop temp 0
 push constant 0
 return
@@ -151,12 +184,12 @@ pop temp 0
 push pointer 0
 call Game.Draw 1
 pop temp 0
-push this 6
+push this 7
 call Sys.wait 1
 pop temp 0
 goto WHILE_EXP0
 label WHILE_END0
-push this 9
+push this 10
 call Drawer.DrawExit 1
 pop temp 0
 call Sys.halt 0
@@ -192,19 +225,42 @@ pop temp 0
 push local 1
 call OpponentCar.dispose 1
 pop temp 0
+push this 4
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
 push local 0
 push this 2
 add
-push this 4
 push this 5
+push this 6
 push constant 16
-push constant 12
-neg
+push pointer 0
+call Game.getSpawnY 1
 call OpponentCar.new 4
 pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
+goto IF_END1
+label IF_FALSE1
+push local 0
+push this 2
+add
+push this 5
+push this 6
+push constant 14
+push pointer 0
+call Game.getSpawnY 1
+call OpponentCar.new 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+label IF_END1
+push this 4
+not
+pop this 4
 label IF_FALSE0
 push local 0
 push constant 1
@@ -213,6 +269,16 @@ pop local 0
 goto WHILE_EXP0
 label WHILE_END0
 push constant 0
+return
+function Game.getSpawnY 0
+push argument 0
+pop pointer 0
+push constant 16
+push constant 2
+call Math.divide 2
+push this 5
+add
+neg
 return
 function Game.CheckCollision 1
 push argument 0
@@ -250,45 +316,45 @@ return
 function Game.ScoreUp 0
 push argument 0
 pop pointer 0
-push this 8
+push this 9
 push constant 1
 add
-pop this 8
+pop this 9
 push constant 0
 return
 function Game.SpeedUp 0
 push argument 0
 pop pointer 0
-push this 6
 push this 7
+push this 8
 sub
 push constant 25
 gt
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
-push this 6
 push this 7
+push this 8
 sub
-pop this 6
+pop this 7
 label IF_FALSE0
 push constant 0
 return
 function Game.SpeedDown 0
 push argument 0
 pop pointer 0
-push this 6
 push this 7
+push this 8
 add
 push constant 275
 lt
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
-push this 6
 push this 7
+push this 8
 add
-pop this 6
+pop this 7
 label IF_FALSE0
 push constant 0
 return
@@ -299,22 +365,22 @@ push constant 0
 pop local 0
 call Screen.clearScreen 0
 pop temp 0
-push this 9
-push this 4
+push this 10
+push this 5
 push this 3
 call Drawer.DrawBorders 3
 pop temp 0
+push this 10
 push this 9
-push this 8
 call Drawer.PrintScore 2
 pop temp 0
-push this 9
+push this 10
 push constant 2500
-push this 6
+push this 7
 call Math.divide 2
 call Drawer.PrintSpeed 2
 pop temp 0
-push this 9
+push this 10
 push this 0
 call Drawer.DrawCar 2
 pop temp 0
@@ -324,7 +390,7 @@ push this 1
 lt
 not
 if-goto WHILE_END0
-push this 9
+push this 10
 push local 0
 push this 2
 add
@@ -340,9 +406,41 @@ goto WHILE_EXP0
 label WHILE_END0
 push constant 0
 return
-function Game.dispose 0
+function Game.dispose 2
 push argument 0
 pop pointer 0
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push this 1
+lt
+not
+if-goto WHILE_END0
+push local 0
+push this 2
+add
+pop pointer 1
+push that 0
+pop local 1
+push local 1
+call OpponentCar.dispose 1
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push this 2
+call Array.dispose 1
+pop temp 0
+push this 10
+call Drawer.dispose 1
+pop temp 0
+push this 0
+call Car.dispose 1
+pop temp 0
 push pointer 0
 call Memory.deAlloc 1
 pop temp 0

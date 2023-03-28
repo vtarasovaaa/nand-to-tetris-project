@@ -52,7 +52,7 @@ class Car {
         return (((Math.abs(opponentCar.GetY() - y) < height) | (Math.abs(opponentCar.GetY() - y) = height)) & (Math.abs(opponentCar.GetX() - x) < width));
     }
 
-    method void dispose() {  // todo освобождать 
+    method void dispose() {
 		do Memory.deAlloc(this);
 		return;
 	}
